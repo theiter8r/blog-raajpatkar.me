@@ -1,6 +1,4 @@
 const subscriberService = require('../services/subscriberService');
-const resend = require('../config/resend');
-const { buildConfirmationEmail } = require('../services/emailTemplate');
 const env = require('../config/env');
 
 const subscriberController = {
@@ -25,20 +23,6 @@ const subscriberController = {
 
       const confirmUrl = `${env.APP_URL}/confirm/${subscriber.confirmation_token}`;
       console.log(`Confirmation URL for ${email}: ${confirmUrl}`);
-
-      // Send confirmation email via Resend
-      const html = buildConfirmationEmail({ confirmUrl });
-      const { error } = await resend.emails.send({
-        from: `${env.BLOG_NAME} <${env.FROM_EMAIL}>`,
-        to: [email],
-        subject: `Confirm your subscription to ${env.BLOG_NAME}`,
-        html,
-      });
-
-      if (error) {
-        console.error('Resend error:', error);
-        return res.status(500).json({ error: 'Failed to send confirmation email. Please try again.', details: error });
-      }
 
       res.status(201).json({
         message: 'Please check your email to confirm your subscription.',

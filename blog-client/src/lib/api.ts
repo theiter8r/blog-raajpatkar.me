@@ -69,6 +69,24 @@ export async function subscribe(email: string): Promise<{ message: string }> {
   }
 }
 
+export async function confirmSubscription(token: string): Promise<{ message: string; email: string }> {
+  try {
+    const { data } = await api.get<{ message: string; email: string }>(`/confirm/${token}`);
+    return data;
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+export async function unsubscribe(token: string): Promise<{ message: string; email: string }> {
+  try {
+    const { data } = await api.post<{ message: string; email: string }>(`/unsubscribe/${token}`);
+    return data;
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
 // ─── Admin Auth ───────────────────────────────────────────────
 
 export async function adminLogin(credentials: AdminLoginRequest): Promise<AdminLoginResponse> {
