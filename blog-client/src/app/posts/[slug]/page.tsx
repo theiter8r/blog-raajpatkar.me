@@ -4,6 +4,7 @@ import { getPostBySlug, getPosts } from '@/lib/api';
 import PostContent from './PostContent';
 import { SITE_NAME, SITE_URL } from '@/lib/constants';
 
+
 interface PostPageProps {
   params: { slug: string };
 }
@@ -24,11 +25,20 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
         type: 'article',
         publishedTime: post.published_at || undefined,
         modifiedTime: post.updated_at,
+        images: [
+          {
+            url: `${SITE_URL}/api/og/${post.slug}`,
+            width: 1200,
+            height: 630,
+            alt: post.title,
+          },
+        ],
       },
       twitter: {
         card: 'summary_large_image',
         title: post.title,
         description,
+        images: [`${SITE_URL}/api/og/${post.slug}`],
       },
     };
   } catch {
