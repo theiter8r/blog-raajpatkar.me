@@ -37,7 +37,7 @@ const subscriberController = {
 
       if (error) {
         console.error('Resend error:', error);
-        return res.status(500).json({ error: 'Failed to send confirmation email. Please try again.' });
+        return res.status(500).json({ error: 'Failed to send confirmation email. Please try again.', details: error });
       }
 
       res.status(201).json({
