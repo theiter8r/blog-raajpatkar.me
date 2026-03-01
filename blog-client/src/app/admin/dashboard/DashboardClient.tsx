@@ -63,15 +63,20 @@ export default function DashboardClient() {
     setSuccess('');
   };
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const handleCreate = async (e: React.FormEvent, publishNow = false) => {
     e.preventDefault();
     setSaving(true);
     setError('');
     try {
       const payload: CreatePostRequest = { title, content };
       if (excerpt) payload.excerpt = excerpt;
+      if (publishNow) payload.status = 'published';
       await createPost(payload);
-      setSuccess('Post created successfully!');
+      setSuccess(
+        publishNow
+          ? 'Post published! Newsletter is being sent to subscribers.'
+          : 'Post created successfully!'
+      );
       resetForm();
       setView('list');
       fetchPosts();
@@ -311,8 +316,19 @@ export default function DashboardClient() {
                       </svg>
                       Saving...
                     </span>
-                  ) : view === 'create' ? 'Create Post' : 'Update Post'}
+                  ) : view === 'create' ? 'Save as Draft' : 'Update Post'}
                 </Button>
+                {view === 'create' && (
+                  <Button
+                    type="button"
+                    variant="primary"
+                    disabled={saving}
+                    onClick={(e) => handleCreate(e as unknown as React.FormEvent, true)}
+                    className="!bg-green-600 hover:!bg-green-700"
+                  >
+                    {saving ? 'Publishing...' : 'Create & Publish'}
+                  </Button>
+                )}
                 <Button
                   type="button"
                   variant="default"

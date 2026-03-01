@@ -7,7 +7,7 @@ const postController = {
    */
   async create(req, res, next) {
     try {
-      const { title, content, excerpt } = req.body;
+      const { title, content, excerpt, status } = req.body;
 
       if (!title || !content) {
         return res.status(400).json({ error: 'Title and content are required' });
@@ -18,7 +18,13 @@ const postController = {
         content,
         excerpt,
         authorId: req.admin.id,
+        status: status || 'draft',
       });
+
+      // If the post was created as published, trigger the newsletter
+      if (post.status === 'published') {
+        await addNewsletterJob(post);
+      }
 
       res.status(201).json(post);
     } catch (err) {

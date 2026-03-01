@@ -57,6 +57,7 @@ export interface CreatePostRequest {
   title: string;
   content: string;
   excerpt?: string;
+  status?: 'draft' | 'published';
 }
 
 export interface UpdatePostRequest {

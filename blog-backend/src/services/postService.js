@@ -6,7 +6,7 @@ const postService = {
   /**
    * Create a new draft post
    */
-  async create({ title, content, excerpt, authorId }) {
+  async create({ title, content, excerpt, authorId, status = 'draft' }) {
     const slug = slugify(title);
     const htmlContent = renderMarkdown(content);
 
@@ -16,11 +16,13 @@ const postService = {
       throw new AppError('A post with a similar title already exists', 409);
     }
 
+    const shouldPublish = status === 'published';
+
     const result = await db.query(
-      `INSERT INTO posts (title, slug, content, html_content, excerpt, author_id, status)
-       VALUES ($1, $2, $3, $4, $5, $6, 'draft')
+      `INSERT INTO posts (title, slug, content, html_content, excerpt, author_id, status, published_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, ${shouldPublish ? 'NOW()' : 'NULL'})
        RETURNING *`,
-      [title, slug, content, htmlContent, excerpt, authorId]
+      [title, slug, content, htmlContent, excerpt, authorId, shouldPublish ? 'published' : 'draft']
     );
 
     return result.rows[0];

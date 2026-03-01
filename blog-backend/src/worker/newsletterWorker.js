@@ -13,7 +13,7 @@ const BATCH_SIZE = 500;
  * Process a newsletter send job
  */
 async function processNewsletterJob(job) {
-  const { postId, title, slug, excerpt } = job.data;
+  const { postId, title, slug, excerpt, htmlContent, publishedAt } = job.data;
 
   console.log(`[Worker] Processing newsletter for post: "${title}" (${postId})`);
 
@@ -46,6 +46,8 @@ async function processNewsletterJob(job) {
           title,
           slug,
           excerpt,
+          htmlContent,
+          publishedAt,
           unsubscribeToken: subscriber.unsubscribe_token,
         });
 

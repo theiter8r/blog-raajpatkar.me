@@ -26,6 +26,7 @@ async function addNewsletterJob(post) {
     slug: post.slug,
     excerpt: post.excerpt,
     htmlContent: post.html_content,
+    publishedAt: post.published_at,
   });
 
   console.log(`Newsletter job queued: ${job.id} for post "${post.title}"`);
